@@ -1,0 +1,185 @@
+longley_of <- ore.push(longley)
+head(longley_of)
+R> longley_of <- ore.push(longley)
+R> dim(longley_of)[1] 16  7
+R> head(longley_of)
+     GNP.deflator     GNP Unemployed Armed.Forces Population Year Employed
+1947         83.0 234.289      235.6        159.0    107.608 1947   60.323
+1948         88.5 259.426      232.5        145.6    108.632 1948   61.122
+1949         88.2 258.054      368.2        161.6    109.773 1949   60.171
+1950         89.5 284.599      335.1        165.0    110.929 1950   61.187
+1951         96.2 328.975      209.9        309.9    112.075 1951   63.221
+1952         98.1 346.999      193.2        359.4    113.270 1952   63.639
+longley_of <- ore.push(longley)
+# Fit full model
+oreFit1 <- ore.lm(Employed ~ ., data = longley_of)
+class(oreFit1)
+summary(oreFit1)
+R> longley_of <- ore.push(longley)
+R> # Fit full model
+R>  oreFit1 <- ore.lm(Employed ~ ., data = longley_of)
+R> class(oreFit1)
+[1] "ore.lm"    "ore.model" "lm"
+R> summary(oreFit1)
+ 
+Call:
+ore.lm(formula = Employed ~ ., data = longley_of)
+ 
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.41011 -0.15767 -0.02816  0.10155  0.45539 
+ 
+Coefficients:
+               Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -3.482e+03  8.904e+02  -3.911 0.003560 ** 
+GNP.deflator  1.506e-02  8.492e-02   0.177 0.863141    
+GNP          -3.582e-02  3.349e-02  -1.070 0.312681    
+Unemployed   -2.020e-02  4.884e-03  -4.136 0.002535 ** 
+Armed.Forces -1.033e-02  2.143e-03  -4.822 0.000944 ***
+Population   -5.110e-02  2.261e-01  -0.226 0.826212    
+Year          1.829e+00  4.555e-01   4.016 0.003037 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+ 
+Residual standard error: 0.3049 on 9 degrees of freedom
+Multiple R-squared:  0.9955,    Adjusted R-squared:  0.9925 
+F-statistic: 330.3 on 6 and 9 DF,  p-value: 4.984e-10
+R> longley_of <- ore.push(longley)
+R> # Two stepwise alternatives
+R> oreStep1 <- 
++   ore.stepwise(Employed ~ .^2, data = longley_of, add.p = 0.1, drop.p = 0.1)
+R> oreStep2 <-
++   step(ore.lm(Employed ~ 1, data = longley_of),
++               scope = terms(Employed ~ .^2, data = longley_of))
+Start:  AIC=41.17
+Employed ~ 1
+ 
+               Df Sum of Sq     RSS     AIC
++ GNP           1   178.973   6.036 -11.597
++ Year          1   174.552  10.457  -2.806
++ GNP.deflator  1   174.397  10.611  -2.571
++ Population    1   170.643  14.366   2.276
++ Unemployed    1    46.716 138.293  38.509
++ Armed.Forces  1    38.691 146.318  39.411
+<none>                      185.009  41.165
+ 
+Step:  AIC=-11.6
+Employed ~ GNP
+ 
+               Df Sum of Sq     RSS     AIC
++ Unemployed    1     2.457   3.579 -17.960
++ Population    1     2.162   3.874 -16.691
++ Year          1     1.125   4.911 -12.898
+<none>                        6.036 -11.597
++ GNP.deflator  1     0.212   5.824 -10.169
++ Armed.Forces  1     0.077   5.959  -9.802
+- GNP           1   178.973 185.009  41.165
+# Load the rpart library to get the kyphosis and solder data sets.
+library(rpart)
+# Logistic regression
+KYPHOSIS <- ore.push(kyphosis)
+kyphFit1 <- ore.glm(Kyphosis ~ ., data = KYPHOSIS, family = binomial())
+kyphFit2 <- glm(Kyphosis ~ ., data = kyphosis, family = binomial())
+summary(kyphFit1)
+summary(kyphFit2)
+R> # Load the rpart library to get the kyphosis and solder data sets.
+R> library(rpart)
+
+R> # Logistic regression
+R> KYPHOSIS <- ore.push(kyphosis)
+R> kyphFit1 <- ore.glm(Kyphosis ~ ., data = KYPHOSIS, family = binomial())
+R> kyphFit2 <- glm(Kyphosis ~ ., data = kyphosis, family = binomial())
+R> summary(kyphFit1)
+ 
+Call:
+ore.glm(formula = Kyphosis ~ ., data = KYPHOSIS, family = binomial())
+ 
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.3124  -0.5484  -0.3632  -0.1659   2.1613  
+ 
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)   
+(Intercept) -2.036934   1.449622  -1.405  0.15998   
+Age          0.010930   0.006447   1.696  0.08997 . 
+Number       0.410601   0.224870   1.826  0.06786 . 
+Start       -0.206510   0.067700  -3.050  0.00229 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+ 
+(Dispersion parameter for binomial family taken to be 1)
+ 
+    Null deviance: 83.234  on 80  degrees of freedom
+Residual deviance: 61.380  on 77  degrees of freedom
+AIC: 69.38
+ 
+Number of Fisher Scoring iterations: 4
+
+R> summary(kyphFit2)
+ 
+Call:
+glm(formula = Kyphosis ~ ., family = binomial(), data = kyphosis)
+ 
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.3124  -0.5484  -0.3632  -0.1659   2.1613  
+ 
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)   
+(Intercept) -2.036934   1.449575  -1.405  0.15996   
+Age          0.010930   0.006446   1.696  0.08996 . 
+Number       0.410601   0.224861   1.826  0.06785 . 
+Start       -0.206510   0.067699  -3.050  0.00229 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+ 
+(Dispersion parameter for binomial family taken to be 1)
+ 
+    Null deviance: 83.234  on 80  degrees of freedom
+Residual deviance: 61.380  on 77  degrees of freedom
+AIC: 69.38
+ 
+Number of Fisher Scoring iterations: 5
+
+# Poisson regression
+R> SOLDER <- ore.push(solder)
+R> solFit1 <- ore.glm(skips ~ ., data = SOLDER, family = poisson())
+R> solFit2 <- glm(skips ~ ., data = solder, family = poisson())
+R> summary(solFit1)
+ 
+Call:
+ore.glm(formula = skips ~ ., data = SOLDER, family = poisson())
+ 
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.4105  -1.0897  -0.4408   0.6406   3.7927  
+ 
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -1.25506    0.10069 -12.465  < 2e-16 ***
+OpeningM     0.25851    0.06656   3.884 0.000103 ***
+OpeningS     1.89349    0.05363  35.305  < 2e-16 ***
+SolderThin   1.09973    0.03864  28.465  < 2e-16 ***
+MaskA3       0.42819    0.07547   5.674 1.40e-08 ***
+MaskB3       1.20225    0.06697  17.953  < 2e-16 ***
+MaskB6       1.86648    0.06310  29.580  < 2e-16 ***
+PadTypeD6   -0.36865    0.07138  -5.164 2.41e-07 ***
+PadTypeD7   -0.09844    0.06620  -1.487 0.137001    
+PadTypeL4    0.26236    0.06071   4.321 1.55e-05 ***
+PadTypeL6   -0.66845    0.07841  -8.525  < 2e-16 ***
+PadTypeL7   -0.49021    0.07406  -6.619 3.61e-11 ***
+PadTypeL8   -0.27115    0.06939  -3.907 9.33e-05 ***
+PadTypeL9   -0.63645    0.07759  -8.203 2.35e-16 ***
+PadTypeW4   -0.11000    0.06640  -1.657 0.097591 .  
+PadTypeW9   -1.43759    0.10419 -13.798  < 2e-16 ***
+Panel        0.11818    0.02056   5.749 8.97e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+ 
+(Dispersion parameter for poisson family taken to be 1)
+ 
+    Null deviance: 6855.7  on 719  degrees of freedom
+Residual deviance: 1165.4  on 703  degrees of freedom
+AIC: 2781.6
+ 
+Number of Fisher Scoring iterations: 4
